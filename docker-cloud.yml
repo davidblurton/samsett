@@ -4,16 +4,31 @@ api:
     - 'VIRTUAL_HOST=http://api.samsett.club'
   image: 'davidblurton/samsett-api:latest'
   ports:
-    - '3000'
+    - '5000'
   restart: always
   sequential_deployment: true
   tags:
     - vultr
+
+frontend:
+  autoredeploy: true
+  environment:
+    - EXCLUDE_PORTS=443
+    - 'VIRTUAL_HOST=http://samsett.club'
+  expose:
+    - '80'
+  image: 'davidblurton/samsett-frontend:latest'
+  restart: always
+  sequential_deployment: true
+  tags:
+    - vultr
+
 loadbalancer:
   deployment_strategy: high_availability
   image: 'dockercloud/haproxy:latest'
   links:
     - api
+    - frontend
   ports:
     - '80:80'
     - '443:443'

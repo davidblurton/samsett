@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 word_list = set(x.strip() for x in open("./ordmyndalisti.txt"))
 
 
@@ -23,7 +24,7 @@ def valid(partitions):
 def split(input, count=1):
     result = list(valid(partitions(input, count)))
 
-    if result or count == len(input):
+    if result or count == min(len(input), 4):
         return result
     else:
         return split(input, count + 1)

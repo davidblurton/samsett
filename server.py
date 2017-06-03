@@ -1,5 +1,11 @@
-from bottle import route, run
+from bottle import hook, route, run, response
 from core import split
+from translate import GoogleTranslator
+
+
+@hook('after_request')
+def enable_cors():
+    response.headers['Access-Control-Allow-Origin'] = '*'
 
 
 @route('/')
@@ -9,7 +15,19 @@ def index():
 
 @route('/<input>')
 def split_words(input):
-    return dict(data=split(input))
+    try:
+        answer = split(input)[0]
+    except IndexError:
+        return dict(input=input, data=[], translations={})
+
+    query = [input] + answer
+
+    translator = GoogleTranslator()
+    translations = translator.translate(query=query, source="is", target="en")
+
+    response = [(source, translated['translatedText']) for (source, translated) in zip(query, translations)]
+
+    return dict(input=input, data=answer, translations=dict(response))
 
 
-run(host='0.0.0.0', port=3000, debug=True)
+run(host='0.0.0.0', port=5000, debug=True)
