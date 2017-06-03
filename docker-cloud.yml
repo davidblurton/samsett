@@ -1,0 +1,28 @@
+api:
+  autoredeploy: true
+  environment:
+    - 'VIRTUAL_HOST=http://api.samsett.club'
+  image: 'davidblurton/samsett-api:latest'
+  ports:
+    - '3000'
+  restart: always
+  sequential_deployment: true
+  tags:
+    - vultr
+loadbalancer:
+  deployment_strategy: high_availability
+  image: 'dockercloud/haproxy:latest'
+  links:
+    - api
+  ports:
+    - '80:80'
+    - '443:443'
+    - '1936:1936'
+  restart: always
+  roles:
+    - global
+  sequential_deployment: true
+  tags:
+    - vultr
+  volumes:
+    - '/var/run/docker.sock:/var/run/docker.sock'
