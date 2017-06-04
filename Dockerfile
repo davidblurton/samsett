@@ -7,4 +7,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-CMD [ "python", "-u", "./server.py" ]
+CMD [ "python", "-u", "-W", "ignore", "./server.py" ]
