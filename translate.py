@@ -147,7 +147,7 @@ class GoogleTranslator(object):
                 return data['translations']
             elif 'detections' in data:
                 return data['detections']
-        except:
+        except KeyError:
             if 'error' in json_data:
                 return json_data["error"]
 
@@ -207,9 +207,10 @@ class GoogleTranslator(object):
                 assert _validate_language(target)
             except:
                 raise ValueError("source language %s is not valid" % target)
-            params += ["source", source]
+            params += [("source", source)]
         params += newquery
         url = self._build_uri("", params)
+        print(url)
         content = self._fetch_data(url)
         results = self._decode_json(content)
 
