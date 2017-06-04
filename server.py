@@ -1,3 +1,5 @@
+import html
+
 from bottle import hook, route, run, response
 from core import split
 from translate import GoogleTranslator
@@ -25,7 +27,7 @@ def split_words(input):
     translator = GoogleTranslator()
     translations = translator.translate(query=query, source="is", target="en")
 
-    response = [(source, translated['translatedText']) for (source, translated) in zip(query, translations)]
+    response = [(source, html.unescape(translated['translatedText'])) for (source, translated) in zip(query, translations)]
 
     return dict(input=input, data=answer, translations=dict(response))
 
